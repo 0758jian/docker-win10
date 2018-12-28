@@ -1,0 +1,62 @@
+version: '2.2'
+services:
+  # The Application php7.1.25
+  app:
+    build:
+      context: ./
+      dockerfile: app.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./wwwroot:/var/www
+      - ./php/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+    # environment:
+    #   - "DB_PORT=3306"
+    #   - "DB_HOST=mysql"
+    #   - "REDIS_HOST=redis"
+    #   - "REDIS_PORT=6379"
+  # The Application php7.0.33
+  app7033:
+    build:
+      context: ./
+      dockerfile: app7033.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./wwwroot:/var/www
+      - ./php/www7033.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+  #   environment:
+  #     - "DB_PORT=3306"
+  #     - "DB_HOST=mysql"
+  #     - "REDIS_HOST=redis"
+  #     - "REDIS_PORT=6379"
+
+  # The Web Server Nginx
+  web:
+    build:
+      context: ./
+      dockerfile: web.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    volumes_from:
+      - app
+    ports:
+      - 80:80
+
+  # The Database Mysql
+  mysqldb:
+    image: daocloud.io/mysql:5.7.24
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/conf/my.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    environment:
+      - "MYSQL_ROOT_PASSWORD=123456"
+    ports:
+        - "3306:3306"
+
+  redisdb:
+    image: daocloud.io/library/redis:4.0.10-alpine
+    volumes:
+      - ./redis/redis.cnf
+    command: redis-server --appendonly yes
