@@ -58,5 +58,5 @@ services:
   redisdb:
     image: daocloud.io/library/redis:4.0.10-alpine
     volumes:
-      - ./redis/redis.cnf
-    command: redis-server --appendonly yes
+      - ./redis/redis.conf:/etc/redis.conf
+    command: redis-server /etc/redis.conf --appendonly yes
