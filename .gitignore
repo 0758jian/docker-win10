@@ -1,4 +1,6 @@
 /mysql/data/*
 !/mysql/data/.gitkeep
+/nginx/*
+!/nginx/default.conf
 /wwwroot/*
 !/wwwroot/.gitkeep
