@@ -60,3 +60,23 @@ services:
     volumes:
       - ./redis/redis.conf:/etc/redis.conf
     command: redis-server /etc/redis.conf --appendonly yes
+
+  crond:
+    build:
+      context: ./
+      dockerfile: crontab.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./wwwroot:/var/www
+      - ./crontab/crontab:/var/spool/cron/crontabs/root
+    command: crond -f -d 8
+
+  supervisor:
+    build:
+      context: ./
+      dockerfile: supervisord.dockerfile
+    working_dir: /var/www
+    volumes:
+      - ./wwwroot:/var/www
+      - ./supervisor/conf:/etc/supervisor/conf.d
+    command: supervisord -n -c /etc/supervisord.conf
