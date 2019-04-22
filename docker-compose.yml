@@ -38,6 +38,7 @@ services:
       dockerfile: web.dockerfile
     working_dir: /var/www
     volumes:
+      - ./wwwroot:/var/www
       - ./nginx:/etc/nginx/conf.d
     volumes_from:
       - app
